@@ -26,6 +26,7 @@ library
                        
 
   build-depends:       base ^>= 4.12.0.0
+                     , trifecta
                      
 
   ghc-options:         -Wall
@@ -70,6 +71,8 @@ test-suite phone-number-parser-test
 
   build-depends:       base ^>= 4.12.0.0
                      , phone-number-parser
+                     , hspec
+                     , trifecta
                      
 
   ghc-options:         -Wall
