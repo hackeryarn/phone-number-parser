@@ -17,7 +17,23 @@ data PhoneNumber =
   deriving (Eq, Show)
 
 parsePhone :: Parser PhoneNumber
-parsePhone = undefined
+parsePhone = PhoneNumber <$> parseNumberingPlanArea <*> parseExchange <*> parseLineNumber
+
+parseNumberingPlanArea :: Parser NumberingPlanArea
+parseNumberingPlanArea = parsePhonePart 3 <* char '-'
+
+parseExchange :: Parser Exchange
+parseExchange = parsePhonePart 3 <* char '-'
+
+parseLineNumber :: Parser LineNumber
+parseLineNumber = parsePhonePart 4 <* eof
+
+parsePhonePart :: Int -> Parser Int
+parsePhonePart digits = do
+  numbers <- some digit
+  if length numbers == digits
+    then return $ read numbers
+    else fail $ "Expected " ++ show digits ++ " numbers"
 
 someFunc :: IO ()
 someFunc = putStrLn ("someFunc" :: String)
