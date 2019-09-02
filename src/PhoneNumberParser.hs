@@ -20,20 +20,22 @@ parsePhone :: Parser PhoneNumber
 parsePhone = PhoneNumber <$> parseNumberingPlanArea <*> parseExchange <*> parseLineNumber
 
 parseNumberingPlanArea :: Parser NumberingPlanArea
-parseNumberingPlanArea = parsePhonePart 3 <* char '-'
+parseNumberingPlanArea = do
+  numberingPlanArea <- parsePhonePart 3
+  skipMany (char '-')
+  return numberingPlanArea
 
 parseExchange :: Parser Exchange
-parseExchange = parsePhonePart 3 <* char '-'
+parseExchange = do
+  numberingPlanArea <- parsePhonePart 3
+  skipMany (char '-')
+  return numberingPlanArea
 
 parseLineNumber :: Parser LineNumber
 parseLineNumber = parsePhonePart 4 <* eof
 
 parsePhonePart :: Int -> Parser Int
-parsePhonePart digits = do
-  numbers <- some digit
-  if length numbers == digits
-    then return $ read numbers
-    else fail $ "Expected " ++ show digits ++ " numbers"
+parsePhonePart digits = read <$> count digits digit
 
 someFunc :: IO ()
 someFunc = putStrLn ("someFunc" :: String)
