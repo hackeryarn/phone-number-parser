@@ -19,3 +19,6 @@ main = hspec $ do
     it "parses condensed phone number" $ do
       let r = pspn "1234567890"
       maybeSuccess r `shouldBe` Just (PhoneNumber 123 456 7890)
+    it "parses condensed phone number" $ do
+      let r = pspn "(123) 456-7890"
+      maybeSuccess r `shouldBe` Just (PhoneNumber 123 456 7890)

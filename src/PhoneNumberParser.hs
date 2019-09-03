@@ -4,6 +4,7 @@ module PhoneNumberParser
        , PhoneNumber (..)
        ) where
 
+import Control.Applicative
 import Text.Trifecta
 
 type NumberingPlanArea = Int
@@ -17,18 +18,18 @@ data PhoneNumber =
   deriving (Eq, Show)
 
 parsePhone :: Parser PhoneNumber
-parsePhone = PhoneNumber <$> parseNumberingPlanArea <*> parseExchange <*> parseLineNumber
+parsePhone = PhoneNumber <$> parseNumberingPlanArea <*> parseThreeWithSeparator <*> parseLineNumber
 
 parseNumberingPlanArea :: Parser NumberingPlanArea
-parseNumberingPlanArea = do
-  numberingPlanArea <- parsePhonePart 3
-  skipMany (char '-')
-  return numberingPlanArea
+parseNumberingPlanArea = parseThreeWithSeparator <|> parseParenthesesNumberingPlanArea
 
-parseExchange :: Parser Exchange
-parseExchange = do
+parseParenthesesNumberingPlanArea :: Parser NumberingPlanArea
+parseParenthesesNumberingPlanArea = char '(' *> parsePhonePart 3 <* char ')' <* space
+
+parseThreeWithSeparator :: Parser Int
+parseThreeWithSeparator = do
   numberingPlanArea <- parsePhonePart 3
-  skipMany (char '-')
+  skipOptional (char '-')
   return numberingPlanArea
 
 parseLineNumber :: Parser LineNumber
