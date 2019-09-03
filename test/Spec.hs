@@ -22,3 +22,9 @@ main = hspec $ do
     it "parses condensed phone number" $ do
       let r = pspn "(123) 456-7890"
       maybeSuccess r `shouldBe` Just (PhoneNumber 123 456 7890)
+    it "ignores leading 1" $ do
+      let r = pspn "1-123-456-7890"
+      maybeSuccess r `shouldBe` Just (PhoneNumber 123 456 7890)
+    it "errors on leading 1 without separator" $ do
+      let r = pspn "11234567890"
+      maybeSuccess r `shouldBe` Nothing

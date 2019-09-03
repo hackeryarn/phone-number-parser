@@ -21,7 +21,10 @@ parsePhone :: Parser PhoneNumber
 parsePhone = PhoneNumber <$> parseNumberingPlanArea <*> parseThreeWithSeparator <*> parseLineNumber
 
 parseNumberingPlanArea :: Parser NumberingPlanArea
-parseNumberingPlanArea = parseThreeWithSeparator <|> parseParenthesesNumberingPlanArea
+parseNumberingPlanArea = skipLeadingOne *> (parseThreeWithSeparator <|> parseParenthesesNumberingPlanArea)
+
+skipLeadingOne :: Parser ()
+skipLeadingOne = skipOptional (string "1-") 
 
 parseParenthesesNumberingPlanArea :: Parser NumberingPlanArea
 parseParenthesesNumberingPlanArea = char '(' *> parsePhonePart 3 <* char ')' <* space
